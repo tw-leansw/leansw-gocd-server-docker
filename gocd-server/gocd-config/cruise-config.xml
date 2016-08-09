@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="82">
+  <server artifactsdir="artifacts" agentAutoRegisterKey="123456789abcdef" commandRepositoryLocation="default" serverId="ba9b4d2d-9a4d-443f-8639-7cd7938debbd">
+    <security>
+      <passwordFile path="/var/go/password.properties" />
+      <admins>
+        <user>admin</user>
+      </admins>
+    </security>
+  </server>
+  <pipelines group="defaultGroup">
+    <pipeline name="defaultPipeline">
+      <environmentvariables>
+        <variable name="SONAR_SERVER">
+          <value>sonar-server</value>
+        </variable>
+        <variable name="SONAR_MYSQL">
+          <value>sonar-mysql</value>
+        </variable>
+        <variable name="ARTIFACTORY_URL">
+          <value>http://artifactory-server:8081/artifactory</value>
+        </variable>
+        <variable name="ARTIFACTORY_USER">
+          <value>admin</value>
+        </variable>
+        <variable name="ARTIFACTORY_PASSWORD">
+          <value>password</value>
+        </variable>
+      </environmentvariables>
+      <materials>
+        <git url="https://github.com/tw-leansw/sample-project-for-test-pyramid.git" />
+      </materials>
+      <stage name="sonar">
+        <jobs>
+          <job name="defaultJob">
+            <tasks>
+              <task>
+                <pluginConfiguration id="script-executor" version="1" />
+                <configuration>
+                  <property>
+                    <key>script</key>
+                    <value>cd junit-project&#xD;
+&#xD;
+PROJECT_NAME=$GO_PIPELINE_NAME&#xD;
+&#xD;
+source $HOME/.bash_profile&#xD;
+export JAVA_HOME=/var/go/.jenv/candidates/java/current&#xD;
+jenv use java 1.8.0_71 &#xD;
+echo $JAVA_HOME&#xD;
+echo $PATH &amp;&amp; java -version&#xD;
+mvn clean package&#xD;
+&#xD;
+cd ..</value>
+                  </property>
+                  <property>
+                    <key>shtype</key>
+                    <value>bash</value>
+                  </property>
+                </configuration>
+                <runif status="passed" />
+              </task>
+              <task>
+                <pluginConfiguration id="script-executor" version="1" />
+                <configuration>
+                  <property>
+                    <key>script</key>
+                    <value>cd junit-project&#xD;
+&#xD;
+PROJECT_NAME=$GO_PIPELINE_NAME&#xD;
+source $HOME/.bash_profile &#xD;
+export JAVA_HOME=/var/go/.jenv/candidates/java/current&#xD;
+jenv use java 1.8.0_71 &#xD;
+echo $JAVA_HOME &#xD;
+echo $PATH &#xD;
+java -version &#xD;
+sonar-runner -X \&#xD;
+-Dsonar.projectKey=$PROJECT_NAME \&#xD;
+-Dsonar.projectName=$PROJECT_NAME \&#xD;
+-Dsonar.projectVersion=1.0-SNAPSHOT \&#xD;
+-Dsonar.sources=src \&#xD;
+-Dsonar.jdbc.url="jdbc:mysql://$SONAR_MYSQL:3306/sonarqube?useUnicode=true&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=true" \&#xD;
+-Dsonar.jdbc.username=sonarqube \&#xD;
+-Dsonar.jdbc.password=sonarqube \&#xD;
+-Dsonar.host.url=http://$SONAR_SERVER:9000 \&#xD;
+-Dlean.aggregated.test.project.build=$GO_PIPELINE_LABEL&#xD;
+&#xD;
+cd ..</value>
+                  </property>
+                  <property>
+                    <key>shtype</key>
+                    <value>bash</value>
+                  </property>
+                </configuration>
+                <runif status="passed" />
+              </task>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="package">
+        <jobs>
+          <job name="mvn">
+            <tasks>
+              <task>
+                <pluginConfiguration id="script-executor" version="1" />
+                <configuration>
+                  <property>
+                    <key>script</key>
+                    <value>cd junit-project&#xD;
+&#xD;
+PROJECT_NAME=$GO_PIPELINE_NAME&#xD;
+&#xD;
+source $HOME/.bash_profile&#xD;
+export JAVA_HOME=/var/go/.jenv/candidates/java/current&#xD;
+jenv use java 1.8.0_71 &#xD;
+echo $JAVA_HOME&#xD;
+echo $PATH &amp;&amp; java -version&#xD;
+mvn clean package&#xD;
+&#xD;
+cd ..</value>
+                  </property>
+                  <property>
+                    <key>shtype</key>
+                    <value>bash</value>
+                  </property>
+                </configuration>
+                <runif status="passed" />
+              </task>
+              <task>
+                <pluginConfiguration id="com.tw.go.plugins.go-artifactory-plugin" version="1" />
+                <configuration>
+                  <property>
+                    <key>URI</key>
+                    <value>test-repo/${GO_PIPELINE_NAME}/${GO_PIPELINE_LABEL}.${GO_STAGE_COUNTER}</value>
+                  </property>
+                  <property>
+                    <key>uriIsFolder</key>
+                    <value>true</value>
+                  </property>
+                  <property>
+                    <key>Path</key>
+                    <value>junit-project/target/*.jar</value>
+                  </property>
+                  <property>
+                    <key>Properties</key>
+                    <value>k=v</value>
+                  </property>
+                </configuration>
+                <runif status="passed" />
+              </task>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+</cruise>
+
