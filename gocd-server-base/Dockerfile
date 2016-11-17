@@ -1,7 +1,5 @@
 # Image:
-# registry.aliyuncs.com/leansw/gocd-server-base:16.11.0
-# Usage:
-# docker run -p 
+# reg.dev.twleansw.com/leansw/gocd-server-base:16.11.0
 
 FROM delitescere/jdk:1.8.0_72
 ARG GO_VERSION=16.11.0-4185
