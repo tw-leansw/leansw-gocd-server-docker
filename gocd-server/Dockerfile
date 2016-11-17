@@ -1,7 +1,7 @@
 # Image:
-# registry.aliyuncs.com/leansw/gocd-server:16.9.0
+# registry.aliyuncs.com/leansw/gocd-server:16.11.0
 
-FROM registry.aliyuncs.com/leansw/gocd-server-base:16.9.0
+FROM registry.aliyuncs.com/leansw/gocd-server-base:16.11.0
 
 ADD ./gocd-plugins/external/*.jar /var/lib/go-server/plugins/external/
 ADD ./gocd-config/gocd-server-config.xml /etc/go/

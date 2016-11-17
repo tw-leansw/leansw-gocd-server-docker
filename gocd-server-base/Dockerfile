@@ -1,10 +1,10 @@
 # Image:
-# registry.aliyuncs.com/leansw/gocd-server-base:16.9.0
+# registry.aliyuncs.com/leansw/gocd-server-base:16.11.0
 # Usage:
 # docker run -p 
 
-FROM delitescere/jdk:latest
-ARG GO_VERSION=16.9.0-4001
+FROM delitescere/jdk:1.8.0_72
+ARG GO_VERSION=16.11.0-4185
 
 # GoCD scripts used here work with ash -- bash not needed.  Only git support is bundled.
 RUN apk --no-cache add git openssh
