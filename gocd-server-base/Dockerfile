@@ -5,7 +5,7 @@ FROM delitescere/jdk:1.8.0_72
 ARG GO_VERSION=16.11.0-4185
 
 # GoCD scripts used here work with ash -- bash not needed.  Only git support is bundled.
-RUN apk --no-cache add git openssh
+RUN echo "ipv6" >> /etc/modules && apk --no-cache add git openssh
 
 # Exposing volumes in a simple manner, and setup links behind-the-scenes to match GoCD's directory structure
 # This requires some bootstrapping in alpine-start.sh
