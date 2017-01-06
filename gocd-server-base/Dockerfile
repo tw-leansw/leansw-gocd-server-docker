@@ -34,7 +34,8 @@ LABEL cd.go.version=$GO_VERSION cd.go.server=""
 
 # Using 'jar' because 'unzip' doesn't support stdin, and bsdtar is not available on Alpine
 # Can't extract only specific files because we're working on stdin.
-RUN chmod +x /start && \ 
+RUN chmod +x /start && \
     echo "Installing GoCD ${GO_VERSION}" && wget -qO- https://download.go.cd/binaries/$GO_VERSION/generic/go-server-$GO_VERSION.zip | jar xf /dev/stdin && \
     mv ./go-server-* ./go-server && sed -e 's/DAEMON=Y/DAEMON=N/' /go-server/go-server.default > /config/default/go-server && \
-    rm -rf go-server-* /var/tmp/* /go-server/init.* /go-server/server.cmd /go-server/*.bat /go-server/*.sh /go-server/default.* /go-server/defaultFiles
+    rm -rf go-server-* /var/tmp/* /go-server/init.* /go-server/server.cmd /go-server/*.bat /go-server/*.sh /go-server/default.* /go-server/defaultFiles && \
+    echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config && echo "UserKnownHostsFile /dev/null" >> /etc/ssh/ssh_config
