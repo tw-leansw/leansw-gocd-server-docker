@@ -1,0 +1,7 @@
+FROM delitescere/jdk:1.8.0_72
+
+ADD ./gocd-plugins/external/*.jar /var/lib/go-server/plugins/external/
+ADD ./gocd-config/gocd-server-config.xml /etc/go/
+ADD ./gocd-config/password.properties /var/go/
+
+VOLUME ["/var/lib/go-server/plugins/external/", "/etc/go/", "/var/go"]
